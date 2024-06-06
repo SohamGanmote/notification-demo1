@@ -72,6 +72,8 @@ function Admin() {
 		const response = await fetch(`${baseUrl}/subscriptions/${userDetails}`);
 		const deviceDetails = await response.json();
 
+		console.log(deviceDetails);
+
 		fetch(`${baseUrl}/sendNotification`, {
 			method: "POST",
 			headers: {

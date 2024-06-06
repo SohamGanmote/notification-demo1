@@ -39,35 +39,34 @@ app.post("/subscribe", (req, res) => {
 app.post("/sendNotification", (req, res) => {
 	const selectedDevices = req.body.devices || [];
 
-	const promises = subscriptions
-		.filter((subscription) => {
-			return (
-				selectedDevices.length === 0 ||
-				selectedDevices.includes(subscription.userIdentifier)
-			);
-		})
-		.map((subscription) => {
-			const date = new Date();
+	let filteredSubscriptions;
 
-			const notificationPayload = {
-				notification: {
-					title: `Hello ${subscription.userIdentifier}`,
-					body: `Today's date : ${date}`,
-					icon: "path_to_icon/icon.png",
-					data: {
-						url: "https://www.example.com", // URL to open on click
-					},
+	if (selectedDevices.length === 0) {
+		filteredSubscriptions = subscriptions;
+	} else {
+		filteredSubscriptions = selectedDevices;
+	}
+
+	const promises = filteredSubscriptions.map((subscription) => {
+		const notificationPayload = {
+			notification: {
+				title: `Hello ${subscription.userIdentifier}`,
+				body: `Today's date : ${new Date()}`,
+				icon: "path_to_icon/icon.png",
+				data: {
+					url: "https://www.example.com",
 				},
-			};
+			},
+		};
 
-			return webPush
-				.sendNotification(
-					subscription.subscription,
-					JSON.stringify(notificationPayload)
-				)
-				.then((response) => console.log("Notification sent:", response))
-				.catch((error) => console.error("Error sending notification:", error));
-		});
+		return webPush
+			.sendNotification(
+				subscription.subscription,
+				JSON.stringify(notificationPayload)
+			)
+			.then((response) => console.log("Notification sent:", response))
+			.catch((error) => console.error("Error sending notification:", error));
+	});
 
 	Promise.all(promises).then(() => res.sendStatus(200));
 });

@@ -6,7 +6,7 @@ const tasks = [
 			"lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem",
 		status: "To-Do",
 		due: "6-6-2024",
-		assignedTo: "1",
+		assignedTo: null,
 	},
 	{
 		id: 2,
@@ -51,21 +51,18 @@ const employees = [
 		name: "John Doe",
 		email: "john@gmail.com",
 		pass: "1234",
-		tasks: [1],
 	},
 	{
 		id: 2,
 		name: "Jane Smith",
 		email: "jane@gmail.com",
 		pass: "1234",
-		tasks: [],
 	},
 	{
 		id: 3,
 		name: "Alice Johnson",
 		email: "alice@gmail.com",
 		pass: "1234",
-		tasks: [],
 	},
 ];
 

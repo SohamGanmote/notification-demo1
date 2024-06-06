@@ -31,9 +31,9 @@ function Home() {
 			navigator.serviceWorker.ready.then((registration) => {
 				if (registration.pushManager) {
 					registration.pushManager.getSubscription().then((subscription) => {
-						// if (!subscription) {
-						registerPush();
-						// }
+						if (!subscription) {
+							registerPush();
+						}
 					});
 				}
 			});
@@ -45,7 +45,7 @@ function Home() {
 		const subscription = await registration.pushManager.subscribe({
 			userVisibleOnly: true,
 			applicationServerKey: urlBase64ToUint8Array(
-				"BE-FPeh1U7MV3_sV_Jzz42GwNwMXJTc9G0lADbEneQerkcrS64-vGVspcFdNkugp6c93rERoVTykJZbRhmu2XtE"
+				"BE3MVkmWiJRtwRPbBqpU2e25A57BvBAowXnac5RwddJIqlQGWnk-G9vn0iUf-uam7OjoIfSyJvHjWaeB7vKWFsM"
 			),
 		});
 
@@ -54,7 +54,7 @@ function Home() {
 			body: JSON.stringify({
 				subscription,
 				userIdentifier: uniqueDeviceId,
-				name: userDetails.name,
+				name: userDetails?.name,
 			}),
 			headers: {
 				"Content-Type": "application/json",
