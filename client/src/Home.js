@@ -31,9 +31,9 @@ function Home() {
 			navigator.serviceWorker.ready.then((registration) => {
 				if (registration.pushManager) {
 					registration.pushManager.getSubscription().then((subscription) => {
-						// if (!subscription) {
-						registerPush();
-						// }
+						if (!subscription) {
+							registerPush();
+						}
 					});
 				}
 			});
