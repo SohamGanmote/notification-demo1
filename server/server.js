@@ -39,7 +39,7 @@ app.post("/subscribe", (req, res) => {
 app.post("/sendNotification", (req, res) => {
 	const selectedDevices = req.body.devices || [];
 
-	let filteredSubscriptions;
+	let filteredSubscriptions = subscriptions;
 
 	if (selectedDevices.length === 0) {
 		filteredSubscriptions = subscriptions;

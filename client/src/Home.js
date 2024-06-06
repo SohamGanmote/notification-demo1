@@ -15,10 +15,10 @@ function Home() {
 		Notification.permission
 	);
 
-	const uniqueDeviceId = userDetails?.id;
+	const uniqueDeviceId = userDetails.id;
 
 	useEffect(() => {
-		if (user) requestNotificationPermission();
+		requestNotificationPermission();
 	}, []);
 
 	const requestNotificationPermission = async () => {
@@ -54,7 +54,7 @@ function Home() {
 			body: JSON.stringify({
 				subscription,
 				userIdentifier: uniqueDeviceId,
-				name: userDetails?.name,
+				name: userDetails.name,
 			}),
 			headers: {
 				"Content-Type": "application/json",
@@ -88,7 +88,7 @@ function Home() {
 			}
 		};
 
-		if (user) fetchTasks();
+		fetchTasks();
 	}, []);
 
 	const handleTaskDone = async (taskId) => {
@@ -100,7 +100,6 @@ function Home() {
 				},
 				body: JSON.stringify({ status: "Done" }),
 			});
-			// Update the tasks after marking one as done
 			const updatedTasks = tasks.map((task) =>
 				task.id === taskId ? { ...task, status: "Done" } : task
 			);
