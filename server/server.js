@@ -22,6 +22,35 @@ webPush.setVapidDetails(
 	vapidKeys.privateKey
 );
 
+function myFunction() {
+	tasks.map((task) => {
+		if (task.assignedTo !== null && task.status === "To-Do") {
+			const deviceDetails = subscriptions.filter(
+				(subscribe) => subscribe.userIdentifier === task.assignedTo
+			);
+			fetch(`http://localhost:8080/sendNotification`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					devices: deviceDetails,
+					notification: {
+						title: `Pending Task`,
+						body: `You have a pending task due ${task.due}`,
+						icon: "path_to_icon/icon.png",
+						data: {
+							url: "http://localhost:3000/",
+						},
+					},
+				}),
+			});
+		}
+	});
+}
+
+setInterval(myFunction, 10000);
+
 let subscriptions = [];
 
 app.get("/reset", (req, res) => {
@@ -38,6 +67,14 @@ app.post("/subscribe", (req, res) => {
 
 app.post("/sendNotification", (req, res) => {
 	const selectedDevices = req.body.devices || [];
+	const notification = req.body.notification || {
+		title: `Test Title`,
+		body: `You can set Title in payload`,
+		icon: "path_to_icon/icon.png",
+		data: {
+			url: "https://www.example.com",
+		},
+	};
 
 	let filteredSubscriptions = subscriptions;
 
@@ -49,14 +86,7 @@ app.post("/sendNotification", (req, res) => {
 
 	const promises = filteredSubscriptions.map((subscription) => {
 		const notificationPayload = {
-			notification: {
-				title: `Hello ${subscription.userIdentifier}`,
-				body: `Today's date : ${new Date()}`,
-				icon: "path_to_icon/icon.png",
-				data: {
-					url: "https://www.example.com",
-				},
-			},
+			notification,
 		};
 
 		return webPush
@@ -91,7 +121,9 @@ app.get("/tasks", (req, res) => {
 	const empId = req.query.empId;
 
 	if (empId) {
-		let assignedTasks = tasks.filter((task) => task.assignedTo === empId);
+		let assignedTasks = tasks.filter(
+			(task) => task.assignedTo === parseInt(empId)
+		);
 		res.send(assignedTasks);
 	} else res.send(tasks);
 });
@@ -127,9 +159,28 @@ app.put("/tasks/:id", (req, res) => {
 
 app.put("/tasks", (req, res) => {
 	const { id, assignedTo } = req.body;
-
 	if (tasks[id - 1].assignedTo === null) {
 		tasks[id - 1].assignedTo = assignedTo;
+		const deviceDetails = subscriptions.filter(
+			(subscribe) => subscribe.userIdentifier === assignedTo
+		);
+		fetch(`http://localhost:8080/sendNotification`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				devices: deviceDetails,
+				notification: {
+					title: `New Task`,
+					body: `Admin Assigned Your Task`,
+					icon: "path_to_icon/icon.png",
+					data: {
+						url: "http://localhost:3000/",
+					},
+				},
+			}),
+		});
 		res.send({ message: "task assigned!" });
 		return;
 	}

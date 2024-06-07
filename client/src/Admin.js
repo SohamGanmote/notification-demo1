@@ -79,7 +79,17 @@ function Admin() {
 			headers: {
 				"Content-Type": "application/json",
 			},
-			body: JSON.stringify({ devices: deviceDetails }),
+			body: JSON.stringify({
+				devices: deviceDetails,
+				notification: {
+					title: `Reminder`,
+					body: `You have a pending task complete it ASAP`,
+					icon: "path_to_icon/icon.png",
+					data: {
+						url: "http://localhost:3000/",
+					},
+				},
+			}),
 		});
 	};
 
